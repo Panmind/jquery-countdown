@@ -33,6 +33,9 @@
 		return this.each (function () {
 			var element = $(this), targetTime = new Date(), timer;
 
+			if (element.data ('countDown'))
+				return; // Already initialized
+
 			if (options.targetDate)
 			{
 				targetTime = new Date(
