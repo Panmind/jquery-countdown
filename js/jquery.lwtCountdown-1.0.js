@@ -3,6 +3,7 @@
  * http://www.littlewebthings.com/projects/countdown/
  *
  * Copyright 2010, Vassilis Dourdounis
+ * Copyright 2010, Marcello Barnaba <marcello.barnaba@gmail.com>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
