@@ -116,12 +116,10 @@
 	};
 
 	$.fn.dashChangeTo = function (selector, n, duration) {
-		  for (var i = (this.find(selector + ' .digit').length-1); i>=0; i--)
-		  {
-				var d = n % 10;
-				n = (n - d) / 10;
-				this.digitChangeTo('#' + this.attr('id') + ' ' + selector + ' .digit:eq('+i+')', d, duration);
-		  }
+		this.find (selector + ' .digit').each (function (i) {
+			// The first digit is i=0, the second i=1
+			$(this).digitChangeTo(i == 0 ? Math.floor(n/10) : n%10, duration);
+		})
 	};
 
 	$.fn.digitChangeTo = function (digit, n, duration) {
