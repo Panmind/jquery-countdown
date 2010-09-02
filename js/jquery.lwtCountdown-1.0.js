@@ -38,11 +38,11 @@
 	};
 
 	$.fn.stopCountDown = function () {
-		clearTimeout($.data(this[0], 'timer'));
+		clearTimeout(this.data('timer'));
 	};
 
 	$.fn.startCountDown = function () {
-		this.doCountDown($(this).attr('id'),$.data(this[0], 'diffSecs'), 500);
+		this.doCountDown(this.data('diffSecs'), 500);
 	};
 
 	$.fn.setCountDown = function (options) {
@@ -55,37 +55,36 @@
 		else if (options.targetOffset)
 		{
 			targetTime.setFullYear(options.targetOffset.year + targetTime.getFullYear());
-			targetTime.setMonth(options.targetOffset.month + targetTime.getMonth());
-			targetTime.setDate(options.targetOffset.day + targetTime.getDate());
-			targetTime.setHours(options.targetOffset.hour + targetTime.getHours());
-			targetTime.setMinutes(options.targetOffset.min + targetTime.getMinutes());
-			targetTime.setSeconds(options.targetOffset.sec + targetTime.getSeconds());
+			targetTime.setMonth(options.targetOffset.month   + targetTime.getMonth());
+			targetTime.setDate(options.targetOffset.day      + targetTime.getDate());
+			targetTime.setHours(options.targetOffset.hour    + targetTime.getHours());
+			targetTime.setMinutes(options.targetOffset.min   + targetTime.getMinutes());
+			targetTime.setSeconds(options.targetOffset.sec   + targetTime.getSeconds());
 		}
 
 		var nowTime = new Date();
 
 		diffSecs = Math.floor((targetTime.valueOf()-nowTime.valueOf())/1000);
 
-		$.data(this[0], 'diffSecs', diffSecs);
+		this.data('diffSecs', diffSecs);
 
 		return diffSecs;
 	};
 
-	$.fn.doCountDown = function (id, diffSecs, duration) {
-		$this = $('#' + id);
+	$.fn.doCountDown = function (diffSecs, duration) {
 		if (diffSecs <= 0)
 		{
 			diffSecs = 0;
-			if ($.data($this[0], 'timer'))
+			if (t = this.data('timer'))
 			{
-				clearTimeout($.data($this[0], 'timer'));
+				clearTimeout(t);
 			}
 		}
 
 		secs = diffSecs % 60;
 		mins = Math.floor(diffSecs/60)%60;
 		hours = Math.floor(diffSecs/60/60)%24;
-		if ($.data($this[0], 'omitWeeks') == true)
+		if (this.data('omitWeeks') == true)
 		{
 			days = Math.floor(diffSecs/60/60/24);
 			weeks = Math.floor(diffSecs/60/60/24/7);
@@ -96,34 +95,32 @@
 			weeks = Math.floor(diffSecs/60/60/24/7);
 		}
 
-		$this.dashChangeTo(id, 'seconds_dash', secs, duration ? duration : 800);
-		$this.dashChangeTo(id, 'minutes_dash', mins, duration ? duration : 1200);
-		$this.dashChangeTo(id, 'hours_dash', hours, duration ? duration : 1200);
-		$this.dashChangeTo(id, 'days_dash', days, duration ? duration : 1200);
-		$this.dashChangeTo(id, 'weeks_dash', weeks, duration ? duration : 1200);
+		this.dashChangeTo('.seconds_dash', secs,  duration || 800);
+		this.dashChangeTo('.minutes_dash', mins,  duration || 1200);
+		this.dashChangeTo('.hours_dash',   hours, duration || 1200);
+		this.dashChangeTo('.days_dash',    days,  duration || 1200);
+		this.dashChangeTo('.weeks_dash',   weeks, duration || 1200);
 
-		$.data($this[0], 'diffSecs', diffSecs);
+		this.data('diffSecs', diffSecs);
 		if (diffSecs > 0)
 		{
-			e = $this;
-			t = setTimeout(function() { e.doCountDown(id, diffSecs-1) } , 1000);
-			$.data(e[0], 'timer', t);
+			e = this;
+			t = setTimeout(function() { e.doCountDown(diffSecs - 1) } , 1000);
+			this.data('timer', t);
 		} 
-		else if (cb = $.data($this[0], 'callback')) 
+		else if (cb = this.data('callback'))
 		{
-			$.data($this[0], 'callback')();
+			cb();
 		}
 
 	};
 
-	$.fn.dashChangeTo = function(id, dash, n, duration) {
-		  $this = $('#' + id);
-		 
-		  for (var i=($this.find('.' + dash + ' .digit').length-1); i>=0; i--)
+	$.fn.dashChangeTo = function (selector, n, duration) {
+		  for (var i = (this.find(selector + ' .digit').length-1); i>=0; i--)
 		  {
-				var d = n%10;
+				var d = n % 10;
 				n = (n - d) / 10;
-				$this.digitChangeTo('#' + $this.attr('id') + ' .' + dash + ' .digit:eq('+i+')', d, duration);
+				this.digitChangeTo('#' + this.attr('id') + ' ' + selector + ' .digit:eq('+i+')', d, duration);
 		  }
 	};
 
