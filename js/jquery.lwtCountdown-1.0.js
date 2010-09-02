@@ -122,23 +122,20 @@
 		})
 	};
 
-	$.fn.digitChangeTo = function (digit, n, duration) {
+	$.fn.digitChangeTo = function (n, duration) {
 		if (!duration)
-		{
 			duration = 800;
-		}
-		if ($(digit + ' div.top').html() != n + '')
+
+		var top = this.find('.top'),
+				bot = this.find('.bottom');
+
+		if (top.html() != n + '')
 		{
+			top.html(n || '0').slideDown(duration);
 
-			$(digit + ' div.top').css({'display': 'none'});
-			$(digit + ' div.top').html((n ? n : '0')).slideDown(duration);
-
-			$(digit + ' div.bottom').animate({'height': ''}, duration, function() {
-				$(digit + ' div.bottom').html($(digit + ' div.top').html());
-				$(digit + ' div.bottom').css({'display': 'block', 'height': ''});
-				$(digit + ' div.top').hide().slideUp(10);
-
-			
+			bot.animate({height: 0}, duration, function() {
+				bot.html(n || '0').css({height: '100%'});
+				top.hide();
 			});
 		}
 	};
