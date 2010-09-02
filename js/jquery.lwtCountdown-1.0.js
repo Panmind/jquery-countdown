@@ -25,32 +25,15 @@
 (function($){
 
 	$.fn.countDown = function (options) {
-		var element  = $(this);
-		var diffSecs = element.setCountDown(options);
+		var element = $(this), targetTime = new Date();
 	
-		element.data('callback', options.onComplete);
-		element.data('omitWeeks', options.omitWeeks);
-
-		element.find('.digit').html('<div class="top"></div><div class="bottom"></div>');
-		element.doCountDown(diffSecs, 500);
-
-		return this;
-	};
-
-	$.fn.stopCountDown = function () {
-		clearTimeout(this.data('timer'));
-	};
-
-	$.fn.startCountDown = function () {
-		this.doCountDown(this.data('diffSecs'), 500);
-	};
-
-	$.fn.setCountDown = function (options) {
-		var targetTime = new Date();
-
 		if (options.targetDate)
 		{
-			targetTime = new Date(options.targetDate.month + '/' + options.targetDate.day + '/' + options.targetDate.year + ' ' + options.targetDate.hour + ':' + options.targetDate.min + ':' + options.targetDate.sec + (options.targetDate.utc ? ' UTC' : ''));
+			targetTime = new Date(
+				options.targetDate.month + '/' + options.targetDate.day + '/' + options.targetDate.year + ' ' +
+				options.targetDate.hour + ':' + options.targetDate.min + ':' + options.targetDate.sec +
+				(options.targetDate.utc ? ' UTC' : '')
+			);
 		}
 		else if (options.targetOffset)
 		{
@@ -62,24 +45,28 @@
 			targetTime.setSeconds(options.targetOffset.sec   + targetTime.getSeconds());
 		}
 
-		var nowTime = new Date();
+		element.data('targetTime', targetTime);
+		element.data('callback',   options.onComplete);
+		element.data('omitWeeks',  options.omitWeeks);
 
-		diffSecs = Math.floor((targetTime.valueOf()-nowTime.valueOf())/1000);
+		element.find('.digit').html('<div class="top"></div><div class="bottom"></div>');
+		element.startCountDown();
 
-		this.data('diffSecs', diffSecs);
+		return this;
+	};
 
-		return diffSecs;
+	$.fn.stopCountDown = function () {
+		clearTimeout(this.data('timer'));
+	};
+
+	$.fn.startCountDown = function () {
+		var diffSecs = Math.floor((+this.data('targetTime') - +new Date())/1000);
+		this.doCountDown(diffSecs, 500);
 	};
 
 	$.fn.doCountDown = function (diffSecs, duration) {
 		if (diffSecs <= 0)
-		{
-			diffSecs = 0;
-			if (t = this.data('timer'))
-			{
-				clearTimeout(t);
-			}
-		}
+			this.stopCountDown();
 
 		secs = diffSecs % 60;
 		mins = Math.floor(diffSecs/60)%60;
@@ -101,7 +88,6 @@
 		this.dashChangeTo('.days_dash',    days,  duration || 1200);
 		this.dashChangeTo('.weeks_dash',   weeks, duration || 1200);
 
-		this.data('diffSecs', diffSecs);
 		if (diffSecs > 0)
 		{
 			e = this;
@@ -141,5 +127,3 @@
 	};
 
 })(jQuery);
-
-
