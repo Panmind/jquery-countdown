@@ -65,8 +65,12 @@
 	};
 
 	$.fn.doCountDown = function (diffSecs, duration) {
-		if (diffSecs <= 0)
+		if (diffSecs <= 0) {
 			this.stopCountDown();
+			var onComplete = this.data('callback');
+			if (onComplete) onComplete.apply(this);
+			return;
+		}
 
 		secs = diffSecs % 60;
 		mins = Math.floor(diffSecs/60)%60;
@@ -88,17 +92,8 @@
 		this.dashChangeTo('.days_dash',    days,  duration || 1200);
 		this.dashChangeTo('.weeks_dash',   weeks, duration || 1200);
 
-		if (diffSecs > 0)
-		{
-			e = this;
-			t = setTimeout(function() { e.doCountDown(diffSecs - 1) } , 1000);
-			this.data('timer', t);
-		} 
-		else if (cb = this.data('callback'))
-		{
-			cb();
-		}
-
+		var self = this;
+		this.data('timer', setTimeout(function() { self.doCountDown(diffSecs - 1) } , 1000));
 	};
 
 	$.fn.dashChangeTo = function (selector, n, duration) {
