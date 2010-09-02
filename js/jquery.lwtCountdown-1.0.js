@@ -78,39 +78,57 @@
 					var diffSecs = Math.floor((+targetTime - +new Date())/1000);
 					var duration = 500;
 
-					timer = setInterval (function () {
-						if (diffSecs <= 0) {
-							stop ();
+					if (diffSecs < 0)
+						diffSecs = 0;
 
-							if (options.onComplete)
-								options.onComplete.apply(element);
-							return;
-						}
-
-						secs = diffSecs % 60;
-						mins = Math.floor(diffSecs/60)%60;
-						hours = Math.floor(diffSecs/60/60)%24;
-						if (options.omitWeeks)
-						{
-							days = Math.floor(diffSecs/60/60/24);
-							weeks = Math.floor(diffSecs/60/60/24/7);
-						}
-						else
-						{
-							days = Math.floor(diffSecs/60/60/24)%7;
-							weeks = Math.floor(diffSecs/60/60/24/7);
-						}
-
-						dashChangeTo('.seconds_dash', secs,  duration);
-						dashChangeTo('.minutes_dash', mins,  duration);
-						dashChangeTo('.hours_dash',   hours, duration);
-						dashChangeTo('.days_dash',    days,  duration);
-						dashChangeTo('.weeks_dash',   weeks, duration);
-
+					var loop = function () {
+						render(diffSecs, duration);
 						diffSecs -= 1;
-					}, 1000);
+					}
+
+					loop();
+					if (diffSecs > 0)
+						timer = setInterval (loop, 1000)
 				}
 			});
+
+			// Private method to render the whole thing
+			//
+			function render (diffSecs, duration) {
+				secs = diffSecs % 60;
+				mins = Math.floor(diffSecs/60)%60;
+				hours = Math.floor(diffSecs/60/60)%24;
+				if (options.omitWeeks)
+				{
+					days = Math.floor(diffSecs/60/60/24);
+					weeks = Math.floor(diffSecs/60/60/24/7);
+				}
+				else
+				{
+					days = Math.floor(diffSecs/60/60/24)%7;
+					weeks = Math.floor(diffSecs/60/60/24/7);
+				}
+
+				dashChangeTo('.seconds_dash', secs,  duration);
+				dashChangeTo('.minutes_dash', mins,  duration);
+				dashChangeTo('.hours_dash',   hours, duration);
+				dashChangeTo('.days_dash',    days,  duration);
+				dashChangeTo('.weeks_dash',   weeks, duration);
+
+				if (diffSecs <= 0)
+					complete();
+			}
+
+			// Privat method invoked by render() when the countdown is over
+			//
+			function complete() {
+				element.data('countDown').stop ();
+
+				if (options.onComplete)
+					options.onComplete.apply(element);
+
+				return true;
+			}
 
 			// Private method to update a single digit couple
 			//
