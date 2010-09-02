@@ -25,27 +25,16 @@
 (function($){
 
 	$.fn.countDown = function (options) {
-
-		config = {};
-
-		$.extend(config, options);
-
-		diffSecs = this.setCountDown(config);
+		var element  = $(this);
+		var diffSecs = element.setCountDown(options);
 	
-		if (config.onComplete)
-		{
-			$.data($(this)[0], 'callback', config.onComplete);
-		}
-		if (config.omitWeeks)
-		{
-			$.data($(this)[0], 'omitWeeks', config.omitWeeks);
-		}
+		element.data('callback', options.onComplete);
+		element.data('omitWeeks', options.omitWeeks);
 
-		$('#' + $(this).attr('id') + ' .digit').html('<div class="top"></div><div class="bottom"></div>');
-		$(this).doCountDown($(this).attr('id'), diffSecs, 500);
+		element.find('.digit').html('<div class="top"></div><div class="bottom"></div>');
+		element.doCountDown(diffSecs, 500);
 
 		return this;
-
 	};
 
 	$.fn.stopCountDown = function () {
