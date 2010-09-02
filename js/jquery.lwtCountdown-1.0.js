@@ -23,14 +23,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-(function($){
+(function($) {
 
 	$.fn.countDown = function (options) {
+		// Public methods invocation
+		//
 		if (typeof options == 'string') {
 			return $(this).data('countDown')[options].apply(this) || this;
 		}
 
 		return this.each (function () {
+			// Initialization
+			//
 			var element = $(this), targetTime = new Date(), timer;
 
 			if (element.data ('countDown'))
@@ -56,6 +60,8 @@
 
 			element.find('.digit').html('<div class="top"></div><div class="bottom"></div>');
 
+			// Public methods definition
+			//
 			element.data ('countDown', {
 				stop: function () {
 					if (timer == undefined)
@@ -106,6 +112,8 @@
 				}
 			});
 
+			// Private method to update a single digit couple
+			//
 			function dashChangeTo (selector, n, duration) {
 				element.find (selector + ' .digit').each (function (i) {
 					// The first digit is i=0, the second i=1
@@ -113,6 +121,8 @@
 				})
 			};
 
+			// Private method to update a single digit
+			//
 			function digitChangeTo (digit, n, duration) {
 				var top = digit.find('.top'),
 						bot = digit.find('.bottom');
