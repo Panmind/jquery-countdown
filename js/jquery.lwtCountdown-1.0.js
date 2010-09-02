@@ -65,7 +65,7 @@
 			element.data ('countDown', {
 				stop: function () {
 					if (timer == undefined)
-						throw ('CountDown already stopped');
+						return;
 
 					clearInterval(timer);
 					timer = undefined
@@ -73,7 +73,7 @@
 
 				start: function () {
 					if (timer != undefined)
-						throw ('CountDown already started');
+						return;
 
 					var diffSecs = Math.floor((+targetTime - +new Date())/1000);
 					var duration = 500;
